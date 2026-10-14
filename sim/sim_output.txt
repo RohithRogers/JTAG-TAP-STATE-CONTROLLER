@@ -1,0 +1,84 @@
+===== FULL TESTBENCH : tb/tb_top.sv =====
+VCD info: dumpfile sim/wave.vcd opened for output.
+
+--- test_reset ---
+PASS reset: TLR after TRST_N=0
+PASS reset INSTR=IDCODE: INSTR=2
+PASS reset DR=IDCODE: DR_SEL=10
+
+--- test_apb_sanity ---
+PASS IR loopback
+PASS BSR loopback
+PASS BYPASS loopback
+PASS IDCODE pre-capture = 0
+PASS IDCODE write PSLVERR
+PASS STATUS write PSLVERR
+PASS bad-addr write PSLVERR
+PASS bad-addr read PSLVERR
+
+--- test_tms_reset (5x TMS=1) ---
+PASS tms_reset->TLR: state=0
+
+--- test_fsm_walk (all arcs) ---
+PASS fsm_walk end TLR: state=0
+
+--- test_shift_ir (load 4'b1010) ---
+INFO IR back = a (ref a)
+PASS IR shift data
+PASS IR hold = 1010: INSTR=a
+PASS unimplemented IR -> BYPASS: DR_SEL=01
+
+--- test_shift_bsr (SAMPLE + pattern 8'h3C) ---
+PASS load_instr: INSTR=1
+PASS SAMPLE -> BSR: DR_SEL=00
+INFO BSR back = 3c (ref 3c)
+PASS BSR shift data
+INFO BSR_HOLD = 3c (ref 3c)
+PASS BSR update (hold)
+
+--- test_bypass (1-bit delay check) ---
+PASS load_instr: INSTR=f
+PASS BYPASS instr -> BYPASS: DR_SEL=01
+PASS BYPASS capture-0
+PASS BYPASS delay chain
+PASS BYPASS reg
+
+--- test_idcode (shift out 32'h14951093) ---
+PASS load_instr: INSTR=2
+PASS IDCODE instr -> IDCODE: DR_SEL=10
+INFO IDCODE shifted = 14951093 (exp 14951093)
+PASS IDCODE shift-out
+PASS IDCODE LSB=1
+PASS IDCODE reg drained to 00000000
+
+--- test_random_tms (200 steps) ---
+INFO random done, ref_state=3 dut=3
+
+===== COVERAGE =====
+States visited : 16/16
+Arcs covered   : 32/32
+DR banks used  : 3/3 (BSR=1 BYPASS=1 IDCODE=1)
+APB txns       : 717
+JTAG steps     : 343
+
+===== RESULT: PASS=373 FAIL=0 =====
+ALL TESTS PASSED
+tb\tb_top.sv:653: $finish called at 28440000 (1ps)
+
+===== MINI TESTBENCH : tb/tb_mini.sv =====
+VCD info: dumpfile sim/mini.vcd opened for output.
+PASS reset->TLR
+PASS INSTR=IDCODE
+PASS BSR loopback
+PASS PSLVERR
+PASS INSTR=1
+PASS BSR=3C
+PASS BSR_HOLD=3c
+PASS INSTR=f
+PASS BYPASS cap-0 + delay
+PASS INSTR=2
+PASS IDCODE=14951093
+
+MINI RESULT: PASS=100 FAIL=0
+ALL MINI TESTS PASSED
+tb\tb_mini.sv:177: $finish called at 7550000 (1ps)

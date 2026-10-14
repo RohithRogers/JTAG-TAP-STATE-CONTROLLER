@@ -279,7 +279,7 @@ module tb_top;
 
     task check_state;
         input [3:0] exp;
-        input [127:0] name;
+        input [255:0] name;
         reg verr; reg [31:0] s;
         begin
             apb_read(A_STATUS, s, verr);
@@ -296,7 +296,7 @@ module tb_top;
 
     task check_instr;
         input [3:0] exp;
-        input [127:0] name;
+        input [255:0] name;
         reg verr; reg [31:0] d;
         begin
             apb_read(A_INSTR, d, verr);
@@ -312,7 +312,7 @@ module tb_top;
 
     task check_drsel;
         input [1:0] exp;
-        input [127:0] name;
+        input [255:0] name;
         reg verr; reg [31:0] s;
         begin
             apb_read(A_STATUS, s, verr);
